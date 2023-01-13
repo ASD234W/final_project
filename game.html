@@ -63,7 +63,7 @@
 						cellDefense=strs[3];//格子當時的防禦值
 						player=strs[4];//玩家
 						updStatus(CID,cellDefense);
-						setCell(CID,cellSign,cellDefense,player) //改變格子的符號
+						updateCell(CID,cellSign,cellDefense,player) //改變格子的符號
 					}
 				};
 				
@@ -120,19 +120,18 @@
 			});
 		}
 		
-		function setCell(CID,cellSign,cellDefense,player) {
-			document.getElementById(CID).setAttribute("defense",cellDefense);
-			if(player==0&&parseInt(cellDefense)>0){
-				document.getElementById(CID).innerHTML = cellSign;
-			}
-			else if(player==1&&parseInt(cellDefense)<0){
-				document.getElementById(CID).innerHTML = cellSign;
-			}
-			else if(parseInt(cellDefense)==0){
-				document.getElementById(CID).innerHTML =".";
+		function updateCell(id, sign, defense, player) {
+			const cell = document.getElementById(id);
+			cell.setAttribute("defense", defense);
+			if (player == 0 && parseInt(defense) > 0) {
+				cell.innerHTML = sign;
+			  } else if (player == 1 && parseInt(defense) < 0) {
+				cell.innerHTML = sign;
+			  } else if (parseInt(defense) == 0) {
+				cell.innerHTML = ".";
 			}
 		}
-		
+
 		function updStatus(CID,Cdefense){//紀錄雙方 player的佔地情況
 			const isPlayer0Occupied = Cdefense > 0;
 			const isPlayer1Occupied = Cdefense < 0;
