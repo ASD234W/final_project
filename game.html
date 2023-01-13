@@ -54,7 +54,7 @@
 								alert("平手！");
 							}
 						}
-					}else if(strs[0]=='Play'){//Update (更新)：更新格子資訊
+					}else if(strs[0]=='Play'){
 						let player = document.getElementById('player').value;
 						document.getElementById('PID').innerHTML = player;
 						console.log(player);
@@ -92,34 +92,33 @@
 			document.getElementById("countDown").innerHTML = time;
 		}
 
-		End = false;
+		let End = false;
 		function game(){
 			const cells = document.querySelectorAll(".cell");
-			//逐一設定onclick事件
-			cells.forEach(function(el) {
-				el.onclick=function(){ //點擊時確認
-					if( !(End)){ //如果遊戲沒結束 //console.log("game_on")
-						id=this.id;
-						let defense = document.getElementById(id).getAttribute("defense");//獲得 defense值
-						parseInt(defense);//console.log(defense);
-						//取得玩家所使用的符號
-						let mySign = document.getElementById('sign').value;
-						let player = document.getElementById('player').value;
-						
-						//把格子的id跟使用符號，用訊息傳給socket server
-						if(player=="0"){
-							defense++;
-							s.send("Play"+","+id+","+mySign+","+defense+","+player);
-						}
-						else if(player=="1"){
-							defense--;
-							s.send("Play"+","+id+","+mySign+","+defense+","+player);
-						}
-					}
-				}
+			cells.forEach(cell => {
+				cell.addEventListener("click", handleCellClick);
 			});
 		}
 		
+		function handleCellClick() {
+		    if (!End) {
+				const id = this.id;
+				const defense = parseInt(this.getAttribute("defense"));
+				const mySign = document.getElementById("sign").value;
+				const player = document.getElementById("player").value;
+				let newDefense = defense;
+
+				if (player == "0") {
+				    newDefense += 1;
+				} else if (player == "1") {
+				    newDefense -= 1;
+				}
+
+				s.send(`Play,${id},${mySign},${newDefense},${player}`);
+				this.setAttribute("defense", newDefense);
+			}
+		}
+
 		function updateCell(id, sign, defense, player) {
 			const cell = document.getElementById(id);
 			cell.setAttribute("defense", defense);
